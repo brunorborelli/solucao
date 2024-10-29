@@ -17,31 +17,30 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private static final String URL = "/api";
+    private static final String BASE_API_PATH = "/api";
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsService customUserDetailsService;
 
     @Autowired
-    public void globalUserDetails(AuthenticationManagerBuilder authenticationManager) throws Exception {
-        authenticationManager
-                .userDetailsService(userDetailsService)
+    public void configureGlobalAuthentication(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
+        authManagerBuilder
+                .userDetailsService(customUserDetailsService)
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain configureSecurity(HttpSecurity http) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(URL + "/").permitAll()
-                        .requestMatchers(HttpMethod.POST, "user").permitAll()
-                        .requestMatchers(URL + "/user").hasAnyRole("USER", "ADM")
-                        .requestMatchers(URL + "/adm").hasAnyRole("ADM")
+                        .requestMatchers(BASE_API_PATH + "/").permitAll() // Public route
+                        .requestMatchers(HttpMethod.POST, BASE_API_PATH + "/register").permitAll() // Registration route
+                        .requestMatchers(BASE_API_PATH + "/user/dashboard").hasRole("USER") // User dashboard route
+                        .requestMatchers(BASE_API_PATH + "/admin/console").hasRole("ADMIN") // Admin exclusive route
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
-
 }

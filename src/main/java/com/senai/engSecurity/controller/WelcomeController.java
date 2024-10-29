@@ -9,18 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class WelcomeController {
 
     @GetMapping
-    public String welcome() {
-        return "Hello World";
+    public String showWelcomeMessage() {
+        return "Bem-vindo ao Sistema!";
     }
 
-    @GetMapping("/user")
-    public String user() {
-        return "Authorize USER";
+    @GetMapping("/user/dashboard")
+    public String userDashboard() {
+        return "Área de Usuário Autorizada!";
     }
 
-    @GetMapping("/adm")
-    public String adm() {
-        return "Authorize ADM";
+    @GetMapping("/admin/console")
+    public String adminConsole() {
+        return "Área Administrativa Exclusiva!";
     }
-
 }

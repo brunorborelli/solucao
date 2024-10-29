@@ -9,14 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("/api/register")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping
-    public User save(@RequestBody User user) {
-        return userService.save(user);
+    public User registerUser(@RequestBody User user) {
+        User registeredUser = userService.save(user);
+        System.out.println("Usuário registrado com sucesso!");
+        return registeredUser;
     }
 }
